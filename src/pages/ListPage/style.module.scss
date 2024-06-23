@@ -1,0 +1,26 @@
+.container {
+  background-image: url("/src/assets/../../../src/assets/img/space.jpg");
+  background-size: cover; /* Растягивает изображение на всю область фона */
+  background-position: center; /* Центрирует изображение по горизонтали и вертикали */
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: vh;
+}
+
+.card1 {
+  width: 335px;
+  height: 335px;
+  transition: transform 0.3s;
+  margin-bottom: 20px;
+  align-self: center;
+  border-radius: 10px;
+}
+
+.card1:hover {
+  transform: scale(1.1);
+}
