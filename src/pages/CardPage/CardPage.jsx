@@ -50,3 +50,6 @@ export const CardPage = () => {
     
   );
 };
+<div className="footer">
+        <AnimatedButton to="/info">Вернуться</AnimatedButton>
+      </div>

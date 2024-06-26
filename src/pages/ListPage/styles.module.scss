@@ -12,6 +12,24 @@
     height: vh;
   }
   
+  .languageSelector {
+    text-align: center;
+    margin-bottom: 20px;
+  
+    button {
+      padding: 10px;
+      margin: 0 5px;
+      font-size: 16px;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background-color: #f0f0f0;
+  
+      &:hover {
+        background-color: #e0e0e0;
+      }
+    }
+  }
   .searchBar {
     margin-bottom: 20px;
     text-align: center;
