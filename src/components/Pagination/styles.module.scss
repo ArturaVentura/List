@@ -1,0 +1,22 @@
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  .ellipsis {
+    display: inline-block;
+    padding: 8px;
+  }
+  
+  button {
+    cursor: pointer;
+    padding: 8px 12px;
+    border: none;
+    background: #f0f0f0;
+  }
+  
+  button.active {
+    background: #ff0081;
+    color: white;
+  }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, } from "react-router-dom";
 import axios from "axios";
 import styles from "./styles.module.scss";
 import { AnimatedButton } from "../../components/AnimatedButton/AnimatedButton";
@@ -15,7 +15,6 @@ export const CardPage = () => {
   useEffect(() => {
     axios
       .get(`${PATCH_URL}/${id}`)
-      
       .then((response) => {
         setCharacter(response.data);
         setLoading(false);
@@ -44,12 +43,8 @@ export const CardPage = () => {
       <p>Origin: {character.origin.name}</p>
       <p>Location: {character.location.name}</p>
       <div className="footer">
-        <AnimatedButton to="/info">Вернуться</AnimatedButton>
+        <AnimatedButton to={-1}>Вернуться</AnimatedButton>
       </div>
     </div>
-    
   );
 };
-<div className="footer">
-        <AnimatedButton to="/info">Вернуться</AnimatedButton>
-      </div>

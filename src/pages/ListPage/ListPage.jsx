@@ -2,8 +2,9 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { AnimatedButton } from "../../components/AnimatedButton/AnimatedButton";
 import axios from "axios";
-import styles from "./styles.module.scss";
 import debounce from "lodash/debounce";
+import Pagination from "../../components/Pagination/Pagination";
+import styles from "./styles.module.scss";
 
 const PATCH_URL = "https://rickandmortyapi.com/api/character";
 
@@ -11,14 +12,21 @@ export const ListPage = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [search, setSearch] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
-  const [currentPage, setCurrentPage] = useState(Number(searchParams.get("page")) || 1);
+  const [currentPage, setCurrentPage] = useState(
+    Number(searchParams.get("page")) || 1
+  );
   const [totalPages, setTotalPages] = useState(1);
   const [searchError, setSearchError] = useState(false);
+  const [searchInput, setSearchInput] = useState(
+    searchParams.get("name") || ""
+  );
 
   useEffect(() => {
-    const params = { ...Object.fromEntries([...searchParams]), page: currentPage };
+    const params = {
+      ...Object.fromEntries([...searchParams]),
+      page: currentPage,
+    };
     setLoading(true);
     axios
       .get(PATCH_URL, { params })
@@ -35,89 +43,35 @@ export const ListPage = () => {
       });
   }, [searchParams, currentPage]);
 
-  const updateSearchParams = (value) => {
-    const params = value ? { name: value, page: 1 } : { page: 1 };
-    setSearchParams(params);
-  };
-
-  const debouncedUpdateSearchParams = useCallback(
-    debounce(updateSearchParams, 700),
+  const debouncedHandleInputChange = useCallback(
+    debounce((value) => {
+      setSearchParams((prevParams) => {
+        const params = {
+          ...Object.fromEntries([...prevParams]),
+          name: value,
+          page: 1,
+        };
+        return params;
+      });
+    }, 700),
     []
   );
 
   const handleInputChange = (event) => {
     const value = event.target.value;
-    setSearch(value);
-    debouncedUpdateSearchParams(value);
+    setSearchInput(value);
+    debouncedHandleInputChange(value);
   };
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
     setSearchParams((prevParams) => {
-      const params = Object.fromEntries([...prevParams]);
-      params.page = pageNumber;
+      const params = {
+        ...Object.fromEntries([...prevParams]),
+        page: pageNumber,
+      };
       return params;
     });
-  };
-
-  const renderPaginationButtons = () => {
-    const pageNumbers = [];
-    if (totalPages <= 7) {
-      for (let i = 1; i <= totalPages; i++) {
-        pageNumbers.push(i);
-      }
-    } else {
-      if (currentPage <= 4) {
-        for (let i = 1; i <= 5; i++) {
-          pageNumbers.push(i);
-        }
-        pageNumbers.push("...");
-        pageNumbers.push(totalPages);
-      } else if (currentPage > totalPages - 4) {
-        pageNumbers.push(1);
-        pageNumbers.push("...");
-        for (let i = totalPages - 4; i <= totalPages; i++) {
-          pageNumbers.push(i);
-        }
-      } else {
-        pageNumbers.push(1);
-        pageNumbers.push("...");
-        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-          pageNumbers.push(i);
-        }
-        pageNumbers.push("...");
-        pageNumbers.push(totalPages);
-      }
-    }
-    return (
-      <>
-        {currentPage > 1 && (
-          <button onClick={() => handlePageChange(currentPage - 1)}>
-            &laquo;
-          </button>
-        )}
-        {pageNumbers.map((pageNumber, index) =>
-          pageNumber === "..." ? (
-            <span key={index} className={styles.ellipsis}>
-              {pageNumber}
-            </span>
-          ) : (
-            <button
-              key={index}
-              onClick={() => handlePageChange(pageNumber)}
-              className={currentPage === pageNumber ? styles.active : ""}
-            >
-              {pageNumber}
-            </button>
-          )
-        )}
-        {currentPage < totalPages && (
-          <button onClick={() => handlePageChange(currentPage + 1)}>
-            &raquo;
-          </button>
-        )}
-      </>
-    );
   };
 
   if (loading) {
@@ -129,7 +83,7 @@ export const ListPage = () => {
       <div className={styles.searchBar}>
         <input
           type="text"
-          value={search}
+          value={searchInput}
           onChange={handleInputChange}
           placeholder="Поиск по имени..."
         />
@@ -152,8 +106,12 @@ export const ListPage = () => {
       <div className="footer">
         <AnimatedButton to="/">Вернуться</AnimatedButton>
       </div>
-      <div className={styles.pagination}>
-        {renderPaginationButtons()}
+      <div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </div>
     </div>
   );
