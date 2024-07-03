@@ -18,60 +18,72 @@ export const ListPage = () => {
   );
   const [totalPages, setTotalPages] = useState(1);
   const [searchError, setSearchError] = useState(false);
-  const [searchInput, setSearchInput] = useState(
-    searchParams.get("name") || ""
-  );
+  const [searchInput, setSearchInput] = useState({
+    name: searchParams.get("name") || "",
+    status: searchParams.get("status") || "",
+    species: searchParams.get("species") || ""
+  });
 
   useEffect(() => {
-    const params = {
-      ...Object.fromEntries([...searchParams]),
-      page: currentPage,
-    };
-    setLoading(true);
-    axios
-      .get(PATCH_URL, { params })
-      .then((response) => {
+    const fetchData = async () => {
+      try {
+        const params = {
+          ...Object.fromEntries([...searchParams]),
+          page: currentPage,
+        };
+        setLoading(true);
+        const response = await axios.get(PATCH_URL, { params });
         setData(response.data.results);
         setTotalPages(response.data.info.pages);
         setLoading(false);
         setSearchError(response.data.results.length === 0);
-      })
-      .catch((error) => {
+      } catch (error) {
         setError(error);
         setLoading(false);
         setSearchError(true);
-      });
+      }
+    };
+
+    fetchData();
   }, [searchParams, currentPage]);
 
   const debouncedHandleInputChange = useCallback(
-    debounce((value) => {
-      setSearchParams((prevParams) => {
-        const params = {
-          ...Object.fromEntries([...prevParams]),
-          name: value,
-          page: 1,
-        };
-        return params;
-      });
+    debounce((updatedParams) => {
+      setSearchParams((prevParams) => ({
+        ...Object.fromEntries([...prevParams]),
+        ...updatedParams,
+        page: 1,
+      }));
     }, 700),
-    []
+    [setSearchParams]
   );
 
   const handleInputChange = (event) => {
-    const value = event.target.value;
-    setSearchInput(value);
-    debouncedHandleInputChange(value);
+    const { name, value } = event.target;
+    setSearchInput((prevInput) => ({
+      ...prevInput,
+      [name]: value
+    }));
+
+    const updatedParams = {
+      [name]: value.trim()
+    };
+
+    if (
+      (name === "name" && value.trim() !== searchInput.name) ||
+      (name === "status" && value.trim() !== searchInput.status) ||
+      (name === "species" && value.trim() !== searchInput.species)
+    ) {
+      debouncedHandleInputChange(updatedParams);
+    }
   };
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-    setSearchParams((prevParams) => {
-      const params = {
-        ...Object.fromEntries([...prevParams]),
-        page: pageNumber,
-      };
-      return params;
-    });
+    setSearchParams((prevParams) => ({
+      ...Object.fromEntries([...prevParams]),
+      page: pageNumber,
+    }));
   };
 
   if (loading) {
@@ -83,9 +95,24 @@ export const ListPage = () => {
       <div className={styles.searchBar}>
         <input
           type="text"
-          value={searchInput}
+          name="name"
+          value={searchInput.name}
           onChange={handleInputChange}
           placeholder="Поиск по имени..."
+        />
+        <input
+          type="text"
+          name="status"
+          value={searchInput.status}
+          onChange={handleInputChange}
+          placeholder="Поиск по статусу..."
+        />
+        <input
+          type="text"
+          name="species"
+          value={searchInput.species}
+          onChange={handleInputChange}
+          placeholder="Поиск по виду..."
         />
       </div>
       <div className={styles.content}>
@@ -98,6 +125,8 @@ export const ListPage = () => {
                 <img src={element.image} alt={element.name} />
                 <h1>{element.name}</h1>
                 <p>Gender: {element.gender}</p>
+                <p>Status: {element.status}</p>
+                <p>Species: {element.species}</p>
               </Link>
             </div>
           ))

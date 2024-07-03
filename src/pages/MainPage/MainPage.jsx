@@ -7,7 +7,11 @@ export const Main = () => {
   return (
     <main className={styles.container}>
       <img className={styles.logo} src={logo} alt="logo" />
-      <AnimatedButton to={"/info"}>Начать</AnimatedButton>
+      <div className={styles.buttonContainer}>
+        <AnimatedButton to={"/info"} className={styles.button}>
+          Начать
+        </AnimatedButton>
+      </div>
     </main>
   );
 };

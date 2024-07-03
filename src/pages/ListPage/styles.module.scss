@@ -1,84 +1,50 @@
 .container {
-    background-image: url("/src/assets/../../../src/assets/img/space.jpg");
-    background-size: cover;
-    background-position: center; 
-  }
-  
-  .content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: vh;
-  }
-  
-  .languageSelector {
-    text-align: center;
-    margin-bottom: 20px;
-  
-    button {
-      padding: 10px;
-      margin: 0 5px;
-      font-size: 16px;
-      cursor: pointer;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      background-color: #f0f0f0;
-  
-      &:hover {
-        background-color: #e0e0e0;
-      }
-    }
-  }
-  .searchBar {
-    margin-bottom: 20px;
-    text-align: center;
-  
-    input {
-      padding: 10px;
-      font-size: 16px;
-      width: 80%;
-      max-width: 500px;
-      border: 1px solid #a71515;
-      border-radius: 4px;
-    }
-  }
-  .card1 {
-    width: 335px;
-    height: 335px;
-    transition: transform 0.3s;
-    margin-bottom: 20px;
-    align-self: center;
-    border-radius: 10px;
-  }
-  
-  .card1:hover {
-    transform: scale(1.1);
-  }
+  position: relative;
+  padding: 20px;
+}
 
-  .pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-  }
-  
-  .pagination button {
-    padding: 8px 12px;
-    margin: 0 4px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #f0f0f0;
-    color: #333;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-  }
-  
-  .pagination button:hover {
-    background-color: #ddd;
-  }
-  
-  .pagination button.active {
-    background-color:#ff0081;
-    color: #fff;
-    border-color: #ff0081;
-  }
+.searchBar {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.card1 {
+  width: calc(20% - 20px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.card1 img {
+  width: 100%;
+}
+
+.card1 h1 {
+  font-size: 18px;
+}
+
+.card1 p {
+  margin: 5px 0;
+}
+
+.card1:hover {
+  transform: scale(1.05);
+}
+
+.notFound {
+  font-size: 18px;
+  color: red;
+}
+
+.footer {
+  margin-top: 20px;
+  text-align: center;
+}
