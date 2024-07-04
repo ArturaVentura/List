@@ -13,9 +13,7 @@ export const ListPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [currentPage, setCurrentPage] = useState(
-    Number(searchParams.get("page")) || 1
-  );
+  const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchError, setSearchError] = useState(false);
   const [searchInput, setSearchInput] = useState({
@@ -23,6 +21,10 @@ export const ListPage = () => {
     status: searchParams.get("status") || "",
     species: searchParams.get("species") || ""
   });
+
+  useEffect(() => {
+    setCurrentPage(Number(searchParams.get("page")) || 1);
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,7 +56,8 @@ export const ListPage = () => {
         ...updatedParams,
         page: 1,
       }));
-    }, 700),
+      setCurrentPage(1);
+    }, 1000),
     [setSearchParams]
   );
 
@@ -66,7 +69,7 @@ export const ListPage = () => {
     }));
 
     const updatedParams = {
-      [name]: value.trim()
+      [name]: value.trim(),
     };
 
     if (
@@ -100,20 +103,25 @@ export const ListPage = () => {
           onChange={handleInputChange}
           placeholder="Поиск по имени..."
         />
-        <input
-          type="text"
+        <select
           name="status"
           value={searchInput.status}
           onChange={handleInputChange}
-          placeholder="Поиск по статусу..."
-        />
-        <input
-          type="text"
+        >
+          <option value="">Все статусы</option>
+          <option value="alive">Живой</option>
+          <option value="dead">Мертвый</option>
+          <option value="unknown">Неизвестно</option>
+        </select>
+        <select
           name="species"
           value={searchInput.species}
           onChange={handleInputChange}
-          placeholder="Поиск по виду..."
-        />
+        >
+          <option value="">Все виды</option>
+          <option value="human">Человек</option>
+          <option value="alien">Инопланетянин</option>
+        </select>
       </div>
       <div className={styles.content}>
         {searchError ? (
